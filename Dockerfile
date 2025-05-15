@@ -1,7 +1,6 @@
-FROM nginx:alpine
+FROM nginx:1.25-alpine 
 
-
-RUN apk update && apk add --no-cache ca-certificates && rm -rf /var/cache/apk/*
+RUN apk add --no-cache ca-certificates
 
 COPY nginx.conf /etc/nginx/nginx.conf
 
