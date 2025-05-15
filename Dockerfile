@@ -1,17 +1,20 @@
 FROM nginx:alpine
 
+
 RUN apk update && \
-    apk add ca-certificates curl && \
+    apk add --no-cache ca-certificates curl && \
     rm -rf /var/cache/apk/*
+
 
 COPY nginx.conf /etc/nginx/nginx.conf
 
 RUN echo '#!/bin/sh\n\
-curl -vk https://pastebin-clone-1.onrender.com\n\
-curl -vk https://pastebin-clone-nk19.onrender.com\n\
-nginx -t\n\
-nginx -g "daemon off;"' > /start.sh && \
-    chmod +x /start.sh
+echo "Testing server connections..."\n\
+curl -vk https://pastebin-clone-1.onrender.com || true\n\
+curl -vk https://pastebin-clone-nk19.onrender.com || true\n\
+echo "Starting Nginx..."\n\
+exec nginx -g "daemon off;"' > /docker-entrypoint.d/start.sh && \
+    chmod +x /docker-entrypoint.d/start.sh
 
 EXPOSE 80
-CMD ["/start.sh"]
+CMD ["nginx", "-g", "daemon off;"]
